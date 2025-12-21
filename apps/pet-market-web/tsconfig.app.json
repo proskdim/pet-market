@@ -4,6 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "types": ["node"],
     "composite": false,
+    "declarationMap": false,
     "declaration": false,
     "emitDeclarationOnly": false,
     // "moduleResolution": "node",
