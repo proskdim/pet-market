@@ -21,7 +21,7 @@
             "input": "apps/pet-market-web/public"
           }
         ],
-        "styles": ["apps/pet-market-web/src/styles.scss"],
+        "styles": ["apps/pet-market-web/src/styles.css"],
         "server": "apps/pet-market-web/src/main.server.ts",
         "ssr": {
           "entry": "apps/pet-market-web/src/server.ts"

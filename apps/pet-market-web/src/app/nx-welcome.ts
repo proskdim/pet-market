@@ -431,10 +431,11 @@ import { CommonModule } from '@angular/common';
         <!--  WELCOME  -->
         <div id="welcome">
           <h1>
-            <span class="underline"> Hello there 123, </span>
+            <span class="underline text-red-500"> Hello there 123, </span>
             Welcome pet-market-web 👋
           </h1>
         </div>
+        <button class="btn btn-primary">Button</button>
         <!--  HERO  -->
         <div id="hero" class="rounded">
           <div class="text-container">
