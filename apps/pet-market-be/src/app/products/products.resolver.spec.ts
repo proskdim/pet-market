@@ -7,7 +7,21 @@ describe('ProductsResolver', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductsResolver, ProductsService],
+      providers: [
+        ProductsResolver,
+        {
+          provide: ProductsService,
+          useValue: {
+            // mock methods as needed
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            searchProducts: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     resolver = module.get<ProductsResolver>(ProductsResolver);
