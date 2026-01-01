@@ -1,5 +1,5 @@
-import { PrismaClient } from "../../../prisma/generated/prisma/client";
-import { productsList } from "../../../prisma/productsList";
+import { PrismaClient } from "./generated/prisma/client";
+import { productsList } from "./productsList";
 
 const prisma = new PrismaClient();
 
