@@ -39,6 +39,7 @@ Thumbs.db
 Dockerfile
 Dockerfile.*
 docker-compose*.yml
+docker-compose*.yaml
 .dockerignore
 
 # Environment files (should be mounted or passed as env vars)

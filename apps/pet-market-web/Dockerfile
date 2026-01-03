@@ -35,6 +35,12 @@ RUN addgroup --system --gid 1001 nodejs && \
 # Copy built application with correct ownership
 COPY --from=builder --chown=angular:nodejs /app/dist/apps/pet-market-web ./
 
+# Install express runtime dependency required by the Angular SSR server
+RUN npm init -y && \
+    npm install express@5 --omit=dev && \
+    npm cache clean --force && \
+    chown -R angular:nodejs /app
+
 USER angular
 
 # Expose the port
