@@ -9,7 +9,7 @@ export class ProductsService {
 
   constructor (private prisma: PrismaService) {}
 
-  create(createProductInput: CreateProductInput) {
+  create(_createProductInput: CreateProductInput) {
     return 'This action adds a new product';
   }
 
@@ -38,7 +38,7 @@ export class ProductsService {
     });
   }
 
-  update(id: number, updateProductInput: UpdateProductInput) {
+  update(id: number, _updateProductInput: UpdateProductInput) {
     return `This action updates a #${id} product`;
   }
 
