@@ -1,0 +1,49 @@
+# Render Blueprint for Pet Market App
+# https://docs.render.com/infrastructure-as-code
+
+databases:
+  - name: pet-market-db
+    plan: free
+    databaseName: petmarket
+    user: petmarket
+
+services:
+  # Backend API (NestJS + GraphQL)
+  - type: web
+    name: pet-market-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/pet-market-be/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: RUN_MIGRATIONS
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pet-market-db
+          property: connectionString
+
+  # Frontend (Angular SSR)
+  - type: web
+    name: pet-market-web
+    runtime: docker
+    plan: free
+    dockerfilePath: ./apps/pet-market-web/Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: API_URL
+        fromService:
+          type: web
+          name: pet-market-api
+          property: host
+

@@ -14,6 +14,10 @@ import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache } from '@apollo/client/core';
 import { appRoutes } from './app.routes';
+import {
+  ENVIRONMENT_CONFIG,
+  provideEnvironmentConfig,
+} from './config/environment.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,10 +26,12 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
     provideHttpClient(),
+    { provide: ENVIRONMENT_CONFIG, useFactory: provideEnvironmentConfig },
     provideApollo(() => {
       const httpLink = inject(HttpLink);
+      const config = inject(ENVIRONMENT_CONFIG);
       return {
-        link: httpLink.create({ uri: "http://localhost:3000/graphql" }),
+        link: httpLink.create({ uri: config.apiUrl }),
         cache: new InMemoryCache(),
       };
     }),
