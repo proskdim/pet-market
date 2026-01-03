@@ -5,17 +5,19 @@ node_modules
 # Build outputs
 dist
 **/dist
+.nx
 .angular
+.cache
+
+# Version control
+.git
+.gitignore
 
 # IDE
 .idea
 .vscode
 *.swp
 *.swo
-
-# Git
-.git
-.gitignore
 
 # Logs
 *.log
@@ -25,28 +27,25 @@ yarn-error.log*
 
 # Testing
 coverage
-.nyc_output
-
-# Nx
-.nx
-nx-cloud.env
-
-# Environment files (will be set via Render)
-.env
-.env.*
-!.env.example
-
-# Docker
-Dockerfile*
-docker-compose*
-.dockerignore
-
-# Documentation
-README.md
-docs
+**/coverage
 
 # Misc
 .DS_Store
 *.md
-!apps/**/README.md
+!README.md
+Thumbs.db
 
+# Docker
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+.dockerignore
+
+# Environment files (should be mounted or passed as env vars)
+.env
+.env.*
+!.env.example
+
+# Temporary files
+tmp
+temp

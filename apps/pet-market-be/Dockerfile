@@ -8,17 +8,22 @@ WORKDIR /app
 # Install OpenSSL for Prisma
 RUN apk add --no-cache openssl
 
-# Install dependencies first for better caching
+# Copy package files first for better layer caching
 COPY package.json package-lock.json ./
 COPY apps/pet-market-be/package.json ./apps/pet-market-be/
 
+# Install dependencies with frozen lockfile
 RUN npm ci --legacy-peer-deps
 
-# Copy source code
-COPY . .
+# Copy Prisma schema first (for Prisma client generation)
+COPY apps/pet-market-be/prisma ./apps/pet-market-be/prisma
 
 # Generate Prisma client for Linux (Alpine)
 RUN npx prisma generate --schema=apps/pet-market-be/prisma/schema.prisma
+
+# Copy only necessary source files
+COPY nx.json tsconfig.base.json eslint.config.mjs ./
+COPY apps/pet-market-be ./apps/pet-market-be
 
 # Build the backend
 RUN npx nx build pet-market-be --configuration=production
@@ -33,35 +38,39 @@ FROM node:22-alpine AS production
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma runtime
-RUN apk add --no-cache openssl
+# Install OpenSSL for Prisma runtime and dumb-init for proper signal handling
+RUN apk add --no-cache openssl dumb-init
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
 
 # Copy built application and pruned package files
-COPY --from=builder /app/apps/pet-market-be/dist ./
+COPY --from=builder --chown=nestjs:nodejs /app/apps/pet-market-be/dist ./
 
 # Copy Prisma schema and migrations for runtime migrations
-COPY --from=builder /app/apps/pet-market-be/prisma/schema.prisma ./prisma/
-COPY --from=builder /app/apps/pet-market-be/prisma/migrations ./prisma/migrations
+COPY --from=builder --chown=nestjs:nodejs /app/apps/pet-market-be/prisma/schema.prisma ./prisma/
+COPY --from=builder --chown=nestjs:nodejs /app/apps/pet-market-be/prisma/migrations ./prisma/migrations
 
-# Install production dependencies (generates Prisma client for Linux)
-RUN npm ci --omit=dev --legacy-peer-deps
-
-# Set ownership
-RUN chown -R nestjs:nodejs /app
+# Install production dependencies (includes Prisma client generation for Linux)
+RUN npm ci --omit=dev --legacy-peer-deps && \
+    npm cache clean --force
 
 USER nestjs
 
 # Expose the port
 EXPOSE 3000
 
+# Set environment
+ENV NODE_ENV=production
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
 
+# Use dumb-init for proper PID 1 signal handling
+ENTRYPOINT ["dumb-init", "--"]
+
 # Start the application
-# Note: Run migrations separately or set RUN_MIGRATIONS=true to run on startup
+# Set RUN_MIGRATIONS=true to run migrations on startup
 CMD ["sh", "-c", "if [ \"$RUN_MIGRATIONS\" = \"true\" ]; then npx prisma migrate deploy --schema=./prisma/schema.prisma; fi && node main.js"]
