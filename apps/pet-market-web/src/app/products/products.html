@@ -1,1 +1,9 @@
-<p>products works!</p>
+@if(productStore.isLoading()) {
+  <p>Loading...</p>
+} @else {
+  <ul>
+    @for(product of productStore.featuredProducts(); track product.id) {
+      <li>{{product.name}}</li>
+    }
+  </ul>
+}

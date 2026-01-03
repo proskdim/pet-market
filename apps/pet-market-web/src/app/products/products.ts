@@ -1,9 +1,19 @@
-import { Component } from '@angular/core';
+import { afterNextRender, Component, inject } from '@angular/core';
+import { ProductStore } from '../stores/product.stores';
+import { CommonModule, JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-products',
-  imports: [],
+  imports: [CommonModule, JsonPipe],
   templateUrl: './products.html',
   styleUrl: './products.scss',
 })
-export class Products {}
+export class Products {
+  productStore = inject(ProductStore);
+
+  constructor() {
+    afterNextRender(() => {
+      this.productStore.loadProducts();
+    });
+  }
+}
