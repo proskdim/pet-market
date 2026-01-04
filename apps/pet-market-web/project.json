@@ -8,11 +8,15 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/pet-market-web",
         "browser": "apps/pet-market-web/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/pet-market-web/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -21,7 +25,9 @@
             "input": "apps/pet-market-web/public"
           }
         ],
-        "styles": ["apps/pet-market-web/src/styles.css"],
+        "styles": [
+          "apps/pet-market-web/src/styles.css"
+        ],
         "server": "apps/pet-market-web/src/main.server.ts",
         "ssr": {
           "entry": "apps/pet-market-web/src/server.ts"
@@ -47,7 +53,13 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/pet-market-web/src/environments/environment.ts",
+              "with": "apps/pet-market-web/src/environments/environment.development.ts"
+            }
+          ]
         }
       },
       "defaultConfiguration": "production"
