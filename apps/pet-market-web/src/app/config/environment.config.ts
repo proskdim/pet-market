@@ -12,20 +12,40 @@ const API_URL_KEY = makeStateKey<string>('apiUrl');
 const DEFAULT_API_URL = 'http://localhost:3000/graphql';
 
 /**
+ * Checks if we're running in production mode on the server
+ */
+function isProductionServer(): boolean {
+  return typeof process !== 'undefined' && process.env?.['NODE_ENV'] === 'production';
+}
+
+/**
  * Gets the API URL from environment variables (server-side only)
  * Handles both full URLs and host-only values
  */
 function getApiUrlFromEnv(): string {
-  if (typeof process === 'undefined' || !process.env?.['API_URL']) {
+  if (typeof process === 'undefined') {
     return DEFAULT_API_URL;
   }
-  const apiUrl = process.env['API_URL'];
+  const apiUrl = process.env?.['API_URL'];
+  if (!apiUrl) {
+    if (isProductionServer()) {
+      console.warn(
+        '[EnvironmentConfig] WARNING: API_URL environment variable is not set in production! ' +
+        'Falling back to localhost. Set API_URL in your deployment environment.'
+      );
+    }
+    return DEFAULT_API_URL;
+  }
+  let resolvedUrl: string;
   // If already a full URL, just append /graphql
   if (apiUrl.startsWith('http://') || apiUrl.startsWith('https://')) {
-    return apiUrl.endsWith('/graphql') ? apiUrl : `${apiUrl}/graphql`;
+    resolvedUrl = apiUrl.endsWith('/graphql') ? apiUrl : `${apiUrl}/graphql`;
+  } else {
+    // Otherwise, treat as hostname and add https
+    resolvedUrl = `https://${apiUrl}/graphql`;
   }
-  // Otherwise, treat as hostname and add https
-  return `https://${apiUrl}/graphql`;
+  console.log(`[EnvironmentConfig] Using API URL: ${resolvedUrl}`);
+  return resolvedUrl;
 }
 
 /**
