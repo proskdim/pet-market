@@ -27,7 +27,9 @@ function isProductionBrowser(): boolean {
     return false;
   }
   const win = globalThis as unknown as { location?: { hostname?: string } };
-  return win.location?.hostname !== 'localhost';
+  const hostname = win.location?.hostname;
+  // Only return true if hostname exists and is not localhost
+  return hostname !== undefined && hostname !== 'localhost';
 }
 
 /**
