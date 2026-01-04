@@ -13,7 +13,9 @@ COPY package.json package-lock.json ./
 COPY apps/pet-market-be/package.json ./apps/pet-market-be/
 
 # Install dependencies with frozen lockfile
-RUN npm ci --legacy-peer-deps
+# Clean npm cache to prevent stale esbuild binary issues
+RUN npm cache clean --force && \
+    npm ci --legacy-peer-deps
 
 # Copy Prisma schema first (for Prisma client generation)
 COPY apps/pet-market-be/prisma ./apps/pet-market-be/prisma
@@ -57,8 +59,11 @@ COPY --from=builder --chown=nestjs:nodejs /app/apps/pet-market-be/prisma/schema.
 COPY --from=builder --chown=nestjs:nodejs /app/apps/pet-market-be/prisma/migrations ./prisma/migrations
 
 # Install production dependencies (includes Prisma client generation for Linux)
-RUN npm ci --omit=dev --legacy-peer-deps && \
+# Build tools are temporarily installed for native module compilation (Prisma postinstall)
+RUN apk add --no-cache --virtual .build-deps python3 make g++ && \
+    npm ci --omit=dev --legacy-peer-deps && \
     npm cache clean --force && \
+    apk del .build-deps && \
     chown -R nestjs:nodejs node_modules
 
 USER nestjs

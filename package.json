@@ -56,7 +56,8 @@
   "overrides": {
     "@apollo/server-plugin-landing-page-graphql-playground": {
       "@apollo/server": "$@apollo/server"
-    }
+    },
+    "esbuild": "0.27.2"
   },
   "dependencies": {
     "@angular-devkit/build-angular": "~20.3.0",
