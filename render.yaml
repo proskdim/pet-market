@@ -1,12 +1,6 @@
 # Render Blueprint for Pet Market App
 # https://docs.render.com/infrastructure-as-code
 
-databases:
-  - name: pet-market-db
-    plan: free
-    databaseName: petmarket
-    user: petmarket
-
 services:
   # Backend API (NestJS + GraphQL)
   - type: web
@@ -24,9 +18,7 @@ services:
       - key: RUN_MIGRATIONS
         value: "true"
       - key: DATABASE_URL
-        fromDatabase:
-          name: pet-market-db
-          property: connectionString
+        sync: false  # Set manually in Render dashboard with your Supabase connection string
 
   # Frontend (Angular SSR)
   - type: web
@@ -42,8 +34,5 @@ services:
       - key: PORT
         value: 4000
       - key: API_URL
-        fromService:
-          type: web
-          name: pet-market-api
-          property: host
+        sync: false  # Set manually: https://pet-market-api.onrender.com
 
