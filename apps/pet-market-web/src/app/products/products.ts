@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './products.scss',
 })
 export class Products {
-  productStore = inject(ProductStore);
+  readonly productStore = inject(ProductStore);
 
   constructor() {
     afterNextRender(() => {
