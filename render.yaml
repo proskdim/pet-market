@@ -34,5 +34,5 @@ services:
       - key: PORT
         value: 4000
       - key: API_URL
-        sync: false  # Set manually: https://pet-market-api.onrender.com
+        sync: false  # Set manually: pet-market-api.onrender.com (without https://) OR https://pet-market-api.onrender.com
 
