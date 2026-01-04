@@ -20,16 +20,38 @@ function isProductionServer(): boolean {
 }
 
 /**
+ * Browser window shape for SSR-safe access
+ */
+interface BrowserWindow {
+  location?: {
+    hostname?: string;
+  };
+}
+
+/**
+ * Gets the browser window object if available (SSR-safe)
+ */
+function getBrowserWindow(): BrowserWindow | null {
+  // Check if we're in a browser environment
+  // Using globalThis['window'] to avoid TypeScript errors during SSR compilation
+  if (typeof globalThis === 'undefined') {
+    return null;
+  }
+  const win = (globalThis as Record<string, unknown>)['window'];
+  return win as BrowserWindow | null;
+}
+
+/**
  * Checks if we're running in production mode in the browser (by checking URL)
  */
 function isProductionBrowser(): boolean {
-  if (typeof globalThis === 'undefined' || !('window' in globalThis)) {
+  const win = getBrowserWindow();
+  const hostname = win?.location?.hostname;
+  if (!hostname) {
     return false;
   }
-  const win = globalThis as unknown as { location?: { hostname?: string } };
-  const hostname = win.location?.hostname;
-  // Only return true if hostname exists and is not localhost
-  return hostname !== undefined && hostname !== 'localhost';
+  // Only return true if hostname is not localhost/127.0.0.1
+  return hostname !== 'localhost' && hostname !== '127.0.0.1';
 }
 
 /**
@@ -89,7 +111,20 @@ export function provideEnvironmentConfig(): EnvironmentConfig {
   } else if (isPlatformBrowser(platformId)) {
     // Browser-side: retrieve from transfer state or use production-aware fallback
     const fallback = getFallbackApiUrl();
-    apiUrl = transferState.get(API_URL_KEY, fallback);
+    const transferredUrl = transferState.get(API_URL_KEY, null);
+    if (transferredUrl) {
+      apiUrl = transferredUrl;
+    } else {
+      // TransferState didn't have the URL - use fallback based on browser detection
+      console.warn('[EnvironmentConfig] No API URL in TransferState, using fallback:', fallback);
+      apiUrl = fallback;
+    }
+    // Safety check: if we're in production browser but got local URL, override it
+    const isLocalUrl = apiUrl.includes('localhost') || apiUrl.includes('127.0.0.1');
+    if (isProductionBrowser() && isLocalUrl) {
+      console.warn('[EnvironmentConfig] Detected production browser with local URL, overriding to:', PRODUCTION_API_URL);
+      apiUrl = PRODUCTION_API_URL;
+    }
   } else {
     apiUrl = getFallbackApiUrl();
   }
