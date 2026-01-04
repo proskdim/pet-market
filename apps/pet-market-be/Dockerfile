@@ -5,8 +5,8 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma
-RUN apk add --no-cache openssl
+# Install build dependencies for native modules
+RUN apk add --no-cache openssl libc6-compat python3 make g++
 
 # Copy package files first for better layer caching
 COPY package.json package-lock.json ./
@@ -38,8 +38,8 @@ FROM node:22-alpine AS production
 
 WORKDIR /app
 
-# Install OpenSSL for Prisma runtime and dumb-init for proper signal handling
-RUN apk add --no-cache openssl dumb-init
+# Install runtime dependencies
+RUN apk add --no-cache openssl libc6-compat dumb-init
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
