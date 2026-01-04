@@ -1,7 +1,8 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Apollo, gql } from 'apollo-angular';
-import { tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 const GET_PRODUCTS = gql`
   query GetProducts {
@@ -50,22 +51,17 @@ export const ProductStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store, apollo = inject(Apollo)) => ({
-    loadProducts() {
-      patchState(store, { isLoading: true });
+    loadProducts(): void {
+      patchState(store, { isLoading: true, error: null });
       apollo
-        .watchQuery<{ products: Product[] }>({
-          query: GET_PRODUCTS,
-        })
-        .valueChanges
+        .query<{ products: Product[] }>({ query: GET_PRODUCTS })
         .pipe(
-          tap({
-            next: ({ data }) => {
-              patchState(store, { featuredProducts: (data?.products ?? []) as Product[], isLoading: false });
-            },
-            error: (err) => {
-              console.log(err);
-              patchState(store, { error: err.message, isLoading: false });
-            }
+          tap(({ data }) => {
+            patchState(store, { featuredProducts: data?.products ?? [], isLoading: false });
+          }),
+          catchError((err: Error) => {
+            patchState(store, { error: err.message, isLoading: false });
+            return of(null);
           })
         )
         .subscribe();
