@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { CartStore } from '../../stores/cart.store';
 
 @Component({
   selector: 'app-header',
@@ -8,4 +9,6 @@ import { RouterLink } from '@angular/router';
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
-export class Header {}
+export class Header {
+  readonly cartStore = inject(CartStore);
+}

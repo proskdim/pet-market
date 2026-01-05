@@ -1,10 +1,11 @@
 import { afterNextRender, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProductStore } from '../stores/product.stores';
+import { ProductStore } from '../stores/product.store';
 import { CommonModule } from '@angular/common';
 import { ProductCard } from '../components/product-card/product-card';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { CartStore } from '../stores/cart.store';
 
 @Component({
   selector: 'app-products',
@@ -15,6 +16,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 export class Products {
   searchTerm = '';
   readonly productStore = inject(ProductStore);
+  readonly cartStore = inject(CartStore);
 
   private readonly searchSubject = new Subject<string>();
 

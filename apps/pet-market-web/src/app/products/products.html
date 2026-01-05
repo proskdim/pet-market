@@ -37,7 +37,7 @@
   >
     <!-- loop over products -->
     @for(product of productStore.featuredProducts(); track product.id) {
-    <app-product-card [product]="product" />
+    <app-product-card [product]="product" (addToCart)="cartStore.addToCart($event)" />
     }
   </div>
   }
