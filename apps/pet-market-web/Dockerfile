@@ -5,14 +5,15 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files first for better layer caching
+# Copy package files and workspace packages first (required for npm workspaces)
 COPY package.json package-lock.json ./
+COPY libs/shared/types ./libs/shared/types
 
 # Install dependencies with frozen lockfile
 RUN npm ci --legacy-peer-deps
 
 # Copy only necessary source files
-COPY nx.json tsconfig.base.json ./
+COPY nx.json tsconfig.base.json tsconfig.json ./
 COPY apps/pet-market-web ./apps/pet-market-web
 
 # Build the Angular SSR application

@@ -11,6 +11,9 @@
     },
     {
       "path": "./apps/pet-market-web"
+    },
+    {
+      "path": "./libs/shared/types"
     }
   ]
 }

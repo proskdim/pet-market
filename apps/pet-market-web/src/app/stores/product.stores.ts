@@ -3,6 +3,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Product } from '@pet-market/shared-types';
 
 const GET_PRODUCTS = gql`
   query GetProducts {
@@ -19,18 +20,6 @@ const GET_PRODUCTS = gql`
     }
   }
 `;
-
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  stripePriceId: string;
-  isFeatured: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 type ProductState = {
   product: Product | null;

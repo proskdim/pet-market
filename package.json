@@ -53,7 +53,8 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "libs/shared/*"
   ],
   "overrides": {
     "@apollo/server-plugin-landing-page-graphql-playground": {

@@ -27,7 +27,8 @@
           "buildDepsName": "build-deps",
           "watchDepsName": "watch-deps"
         }
-      }
+      },
+      "exclude": ["libs/shared/types/*"]
     },
     {
       "plugin": "@nx/webpack/plugin",
@@ -52,6 +53,15 @@
         "targetName": "test"
       },
       "exclude": ["apps/pet-market-be-e2e/**/*"]
+    },
+    {
+      "plugin": "@nx/js/typescript",
+      "include": ["libs/shared/types/*"],
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
+        }
+      }
     }
   ],
   "targetDefaults": {
