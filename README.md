@@ -2,38 +2,6 @@
 
 Пример проекта на **NestJS**, **Angular**, **GraphQL**, **Prisma** и **PostgreSQL**, демонстрирующий связку современных технологий в едином рабочем пространстве **Nx**.
 
----
-
-## 🛠 Технологический стек
-
-| Слой | Технологии |
-|------|-----------|
-| **Frontend** | Angular 20, TailwindCSS 4, DaisyUI, SSR |
-| **Backend** | NestJS 11, Apollo Server, GraphQL |
-| **База данных** | PostgreSQL, Prisma ORM |
-| **Монорепо** | Nx 22, npm workspaces |
-| **Тестирование** | Jest, E2E тесты |
-| **Качество кода** | ESLint, Prettier, TypeScript |
-
----
-
-## 📁 Структура проекта
-
-```
-pet-market/
-├── apps/
-│   ├── pet-market-web/       # Angular frontend с SSR
-│   ├── pet-market-be/        # NestJS GraphQL API
-│   └── pet-market-be-e2e/    # E2E тесты для backend
-├── packages/                 # Переиспользуемые библиотеки
-├── nx.json                   # Конфигурация Nx
-└── package.json              # Зависимости монорепо
-```
-
----
-
-## 🚀 Быстрый старт
-
 ### Предварительные требования
 
 - Node.js 20+
@@ -64,11 +32,10 @@ DATABASE_URL="postgresql://user:password@localhost:5432/pet_market?schema=public
 ```bash
 cd apps/pet-market-be
 npx prisma migrate dev
+npx prisma generate
 ```
 
 ---
-
-## 📦 Команды для запуска
 
 ### Development
 
@@ -78,6 +45,9 @@ nx serve pet-market-web
 
 # Запуск backend (NestJS GraphQL API)
 nx serve pet-market-be
+
+# Запуск двух проектов сразу
+nx run-many --parallel -t serve -p apps/pet-market-be apps/pet-market-web
 ```
 
 ### Build
@@ -116,14 +86,3 @@ nx run-many -t build
 # Проверка типов
 nx typecheck pet-market-be
 ```
-
----
-
-## 🔗 API Endpoints
-
-После запуска backend доступны:
-
-- **GraphQL Playground**: `http://localhost:3000/graphql`
-- **GraphQL Schema**: `apps/pet-market-be/dist/schema.gql`
-
----
