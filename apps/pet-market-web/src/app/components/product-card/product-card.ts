@@ -12,6 +12,7 @@ export class ProductCard {
   addToCart = output<Product>();
 
   onAddToCart(product: Product) {
+    // emit the product to the parent component
     this.addToCart.emit(product);
   }
 }

@@ -37,6 +37,7 @@
   >
     <!-- loop over products -->
     @for(product of productStore.featuredProducts(); track product.id) {
+      <!-- addToCart is the emmited output of the product-card component -->
     <app-product-card [product]="product" (addToCart)="cartStore.addToCart($event)" />
     }
   </div>
