@@ -19,18 +19,3 @@ services:
         value: "true"
       - key: DATABASE_URL
         sync: false  # Set manually in Render dashboard with your Supabase connection string
-
-  # Frontend (Angular SSR)
-  - type: web
-    name: pet-market-web
-    runtime: docker
-    plan: free
-    dockerfilePath: ./apps/pet-market-web/Dockerfile
-    dockerContext: .
-    healthCheckPath: /
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 4000
-
