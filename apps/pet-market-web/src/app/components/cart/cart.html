@@ -36,7 +36,7 @@
           <td>${{ item.price | number : "1.2-2" }}</td>
           <td>
             <input
-              (input)="updateQuantity(item.id, $event)",
+              (input)="updateQuantity(item.id, $event)"
               [value]="item.quantity"
               type="number"
               class="input input-bordered w-20"
