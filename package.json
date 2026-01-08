@@ -64,7 +64,6 @@
   },
   "dependencies": {
     "@angular-devkit/build-angular": "~20.3.0",
-    "@netlify/angular-runtime": "^3.0.1",
     "@angular/common": "~20.3.0",
     "@angular/compiler": "~20.3.0",
     "@angular/core": "~20.3.0",
@@ -82,6 +81,7 @@
     "@nestjs/core": "^11.1.0",
     "@nestjs/graphql": "^13.2.0",
     "@nestjs/platform-express": "^11.1.0",
+    "@netlify/angular-runtime": "^3.0.1",
     "@ngrx/signals": "^20.1.0",
     "@prisma/client": "^6.19.0",
     "@tailwindcss/postcss": "^4.1.18",
